@@ -1,15 +1,23 @@
 <div class="content-list">
   <div class="header">
-      <app-search></app-search>
+    <app-search></app-search>
   </div>
-  <div class="content">
+  <div class="content" *ngIf="hasResults">
     <app-user-info></app-user-info>
-      <div class="repo-list">
-        <app-repo-item></app-repo-item>
-        <app-repo-item></app-repo-item>
-        <app-repo-item></app-repo-item>
-        <app-repo-item></app-repo-item>
-        <app-repo-item></app-repo-item>
+    <div class="repo-list">
+      <app-repo-item></app-repo-item>
+      <app-repo-item></app-repo-item>
+      <app-repo-item></app-repo-item>
+      <app-repo-item></app-repo-item>
+      <app-repo-item></app-repo-item>
+    </div>
+  </div>
+  <div *ngIf="!hasResults" class="empty-state">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <img src="/assets/img/empty-state-icon.svg" aria-hidden="true" />
+        <div class="message">User not found</div>
       </div>
+    </div>
   </div>
 </div>

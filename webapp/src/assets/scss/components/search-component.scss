@@ -10,14 +10,18 @@
     margin-right: 30px;
   }
 
-  .search-input input {
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: 1px solid $silver;
-    line-height: 30px;
-    width: 100%;
-    background: no-repeat url("/assets/img/search.svg") right;
+  .search-input {
+    width: 70%;
+
+    input {
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 1px solid $silver;
+      line-height: 30px;
+      width: 100%;
+      background: no-repeat url("/assets/img/search.svg") right;
+    }
   }
 
   .picture {

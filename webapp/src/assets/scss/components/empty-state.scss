@@ -1,0 +1,10 @@
+.empty-state {
+  width: 100%;
+  text-align: center;
+
+  .message {
+    font-size: $font-xxxl;
+    margin-top: 28px;
+    font-weight: 300;
+  }
+}

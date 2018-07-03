@@ -5,10 +5,12 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './content-list.component.html'
 })
 export class ContentListComponent implements OnInit {
+  hasResults: boolean;
 
   constructor() { }
 
   ngOnInit() {
+    this.hasResults = true;
   }
 
 }
