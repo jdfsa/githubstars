@@ -1,5 +1,7 @@
 /* all scss must be referenced here */
 @import '_variables';
+@import '_fonts';
 
 @import './definitions';
 @import './components/search-component';
+@import './components/user-info';
