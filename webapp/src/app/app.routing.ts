@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ListComponent } from './pages';
+import { ContentListComponent } from './pages';
 
 const ROUTES: Routes = [
   {
@@ -10,7 +10,7 @@ const ROUTES: Routes = [
   },
   {
     path: 'list',
-    component: ListComponent,
+    component: ContentListComponent,
     data: {
       search: ''
     }

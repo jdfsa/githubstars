@@ -4,17 +4,16 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
-import { SearchComponent } from './components';
-import { ListComponent } from './pages/list/list.component';
-import { UserInfoComponent } from './components/user-info/user-info.component';
-
+import { SearchComponent, UserInfoComponent, RepoItemComponent } from './components';
+import { ContentListComponent } from './pages';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
-    ListComponent,
-    UserInfoComponent
+    ContentListComponent,
+    UserInfoComponent,
+    RepoItemComponent
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,1 @@
-export * from './list/list.component';
+export * from './content-list/content-list.component';

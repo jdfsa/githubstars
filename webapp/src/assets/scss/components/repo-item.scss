@@ -1,0 +1,29 @@
+.repo-item {
+  width: 838px;
+  height: 141px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  margin: 32px;
+  padding: 27px 32px 32px;
+
+  .title {
+    font-size: $font-lg;
+    margin-bottom: 10px;
+  }
+  .description {
+    font-weight: 300;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 91px;
+    height: 43px;
+    background: #FFFFFF;
+    border: 2px solid $button-violet;
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: $button-violet;
+    margin-top: 15px;
+    float: right;
+  }
+}
