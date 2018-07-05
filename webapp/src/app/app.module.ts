@@ -6,6 +6,11 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { SearchComponent, UserInfoComponent, RepoItemComponent } from './components';
 import { ContentListComponent } from './pages';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { TokenInterceptor } from './auth/token.interceptor';
+import { AuthorizeComponent } from './pages/authorize/authorize.component';
+import { AuthService } from './auth/auth.service';
+import { AuthCheckService } from './auth/auth-check.service';
 
 @NgModule({
   declarations: [
@@ -13,13 +18,23 @@ import { ContentListComponent } from './pages';
     SearchComponent,
     ContentListComponent,
     UserInfoComponent,
-    RepoItemComponent
+    RepoItemComponent,
+    AuthorizeComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    AuthService,
+    AuthCheckService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

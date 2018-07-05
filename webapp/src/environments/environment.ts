@@ -4,5 +4,13 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  appData: {
+    clientId: 'b4a16d2a11c38dd95924',
+    redirectUri: 'http://localhost:4200/authorize'
+  },
+  endpoints: {
+    authorize: 'http://localhost:62491/api/auth/url',
+    token: 'http://localhost:62491/api/auth/token'
+  }
 };

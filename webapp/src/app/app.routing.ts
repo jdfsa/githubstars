@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ContentListComponent } from './pages';
+import { ContentListComponent, AuthorizeComponent } from './pages';
+import { AuthCheckService } from './auth/auth-check.service';
 
 const ROUTES: Routes = [
   {
@@ -13,7 +14,12 @@ const ROUTES: Routes = [
     component: ContentListComponent,
     data: {
       search: ''
-    }
+    },
+    canActivate: [AuthCheckService]
+  },
+  {
+    path: 'authorize',
+    component: AuthorizeComponent
   }
 ];
 
