@@ -15,7 +15,7 @@ namespace Api.Controllers
     /// </summary>
     [Produces("application/json")]
     [Route("api/auth")]
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         /// <summary>
         /// App configuration with data from appsettings.json
@@ -63,14 +63,27 @@ namespace Api.Controllers
         [Route("url")]
         public string GetUrl([FromQuery] string urlBack)
         {
-            string passCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(
-                string.Format("GitHubStars{0}", random.Next())));
+            try
+            {
+                string passCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(
+                    string.Format("GitHubStars{0}", random.Next())));
 
-            // return the querystring formatted
-            return string.Format("{0}?client_id={1}&redirect_uri={2}&state={3}",
-                configuration["GitHubEndpoints:Authorize"],
-                configuration["GitHubData:ClientId"],
-                urlBack, passCode);
+                // return the querystring formatted
+                return string.Format("{0}?client_id={1}&redirect_uri={2}&state={3}",
+                    configuration["GitHubEndpoints:Authorize"],
+                    configuration["GitHubData:ClientId"],
+                    urlBack, passCode);
+            }
+            catch (FormatException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return ex.Message;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return ex.Message;
+            }
         }
 
         /// <summary>
@@ -113,15 +126,15 @@ namespace Api.Controllers
             }
             catch (JsonSerializationException ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ParseException(ex));
             }
             catch (HttpRequestException ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ParseException(ex));
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ParseException(ex));
             }
         }
 
