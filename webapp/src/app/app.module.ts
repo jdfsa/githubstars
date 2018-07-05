@@ -11,6 +11,7 @@ import { TokenInterceptor } from './auth/token.interceptor';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
 import { AuthService } from './auth/auth.service';
 import { AuthCheckService } from './auth/auth-check.service';
+import { UserService } from './services/user.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AuthCheckService } from './auth/auth-check.service';
       multi: true
     },
     AuthService,
-    AuthCheckService
+    AuthCheckService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

@@ -11,6 +11,7 @@ export const environment = {
   },
   endpoints: {
     authorize: 'http://localhost:62491/api/auth/url',
-    token: 'http://localhost:62491/api/auth/token'
+    token: 'http://localhost:62491/api/auth/token',
+    user: 'http://localhost:62491/api/user'
   }
 };
