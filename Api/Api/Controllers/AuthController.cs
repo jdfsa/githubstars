@@ -108,8 +108,8 @@ namespace Api.Controllers
                     return StatusCode((int)response.StatusCode);
 
                 // read and return the response payload
-                string responseContent = response.Content.ReadAsStringAsync().Result;
-                return StatusCode(200, responseContent);
+                string content = response.Content.ReadAsStringAsync().Result;
+                return StatusCode(200, JsonConvert.DeserializeObject(content));
             }
             catch (JsonSerializationException ex)
             {

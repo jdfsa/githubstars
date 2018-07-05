@@ -3,6 +3,7 @@ using Api.Test.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -28,8 +29,8 @@ namespace Api.Test
             random.Setup(x => x.Next()).Returns(99887766);
 
             var httpClient = new HttpClient(new HttpHandlerMock(
-                HttpStatusCode.OK, 
-                "{\"client_id\":\"idtest\",\"client_secret\":\"secrettest\",\"code\":\"codetest\",\"state\":statetest}"));
+                HttpStatusCode.OK,
+                "{\"access_token\":\"access_token_test\",\"token_type\":\"bearer\",\"scope\":\"scope_test\"}"));
 
             var authControllerMock = new Mock<AuthController>();
             this.controller = new AuthController(configuration.Object);
@@ -49,9 +50,10 @@ namespace Api.Test
         public void TestGetToken()
         {
             var result = (ObjectResult)controller.GetToken("githubcodetest", "statetest");
+            var expected = JsonConvert.DeserializeObject("{\"access_token\":\"access_token_test\",\"token_type\":\"bearer\",\"scope\":\"scope_test\"}");
 
             Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
-            Assert.Equal("{\"client_id\":\"idtest\",\"client_secret\":\"secrettest\",\"code\":\"codetest\",\"state\":statetest}", result.Value);
+            Assert.Equal(expected, result.Value);
         }
     }
 }
