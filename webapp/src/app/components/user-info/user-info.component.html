@@ -1,16 +1,16 @@
 <div class="user-info">
   <div class="info-container">
-      <div class="picture-container">
-          <div class="picture"></div>
-      </div>
-      <div>
-          <span class="name">Sindre Sorhus</span>
-          <span>sindresorhus</span>
-      </div>
+    <div class="picture-container">
+      <img class="picture" [src]="data?.avatarUrl" *ngIf="data" />
+    </div>
+    <div>
+      <span class="name">{{data?.name}}</span>
+      <span>{{data?.login}}</span>
+    </div>
   </div>
   <div class="detail-container">
     <div class="summary">
-      Maker . Full-Time . Open-Sourcerer . Into Swift and Node.js
+        {{data?.bio}}
     </div>
     <div>
       <img src="/assets/img/users-icon.svg" aria-hidden="true" />
@@ -22,11 +22,11 @@
     </div>
     <div>
       <img src="/assets/img/mail-icon.svg" aria-hidden="true" />
-      <span>sindresorhus@gmail.com</span>
+      <span>{{data?.email}}</span>
     </div>
     <div>
       <img src="/assets/img/globe-icon.svg" aria-hidden="true" />
-      <span>sindresorhus.com</span>
+      <span>{{data?.websiteUrl}}</span>
     </div>
   </div>
 </div>
