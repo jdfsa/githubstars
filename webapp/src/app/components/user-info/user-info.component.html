@@ -12,21 +12,21 @@
     <div class="summary">
         {{data?.bio}}
     </div>
-    <div>
+    <div *ngIf="data?.companyHTML" class="info-data">
       <img src="/assets/img/users-icon.svg" aria-hidden="true" />
-      <span>@avajs @chalk @yeoman</span>
+      <div [innerHTML]="data?.companyHTML"></div>
     </div>
-    <div>
+    <div *ngIf="data?.location" class="info-data">
       <img src="/assets/img/location-icon.svg" aria-hidden="true" />
-      <span>São Paulo, SP</span>
+      <span>{{data?.location}}</span>
     </div>
-    <div>
+    <div *ngIf="data?.email" class="info-data">
       <img src="/assets/img/mail-icon.svg" aria-hidden="true" />
-      <span>{{data?.email}}</span>
+      <span><a [href]="data?.email ? 'mailto:' + data?.email : null">{{data?.email}}</a></span>
     </div>
-    <div>
+    <div *ngIf="data?.websiteUrl" class="info-data">
       <img src="/assets/img/globe-icon.svg" aria-hidden="true" />
-      <span>{{data?.websiteUrl}}</span>
+      <span><a [href]="data?.websiteUrl">{{data?.websiteUrl}}</a></span>
     </div>
   </div>
 </div>

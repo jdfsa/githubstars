@@ -72,19 +72,12 @@ namespace Api.Controllers
                                             name,
                                             login,
                                             bio,
-                                            bioHTML,
-                                            following (first: 3) {
-                                                edges {
-                                                    node {
-                                                        ... on User {
-                                                                login
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                email,
-                                                websiteUrl,
-                                                repositories(first: 4) {
+                                            company,
+                                            companyHTML,
+                                            location,
+                                            email,
+                                            websiteUrl,
+                                            repositories(first: 4) {
                                                 edges {
                                                     node {
                                                         id,
