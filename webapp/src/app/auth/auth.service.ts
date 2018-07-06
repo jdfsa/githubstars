@@ -12,7 +12,7 @@ export class AuthService {
   }
 
   public getToken(): string {
-    return localStorage.getItem(this.TOKEN_STORAGE_NAME);
+    return localStorage.getItem(this.TOKEN_STORAGE_NAME) || '';
   }
 
   public storeToken(token: string) {
