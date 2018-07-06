@@ -5,11 +5,4 @@ import { Router } from '@angular/router';
   selector: 'app-search-content',
   templateUrl: './search-content.component.html'
 })
-export class SearchContentComponent implements OnInit {
-
-  constructor(private router: Router) { }
-
-  ngOnInit() {
-  }
-
-}
+export class SearchContentComponent { }
