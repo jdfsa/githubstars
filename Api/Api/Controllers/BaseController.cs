@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Api.Model;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Api.Controllers
@@ -15,19 +17,18 @@ namespace Api.Controllers
         /// <param name="ex">Exception to be send</param>
         /// <param name="statusCode">Status code</param>
         /// <returns>Object with response data</returns>
-        protected object ParseException(Exception ex, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+        protected Dictionary<string, ResponseException> ParseException(Exception ex, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         {
-            // create a generic response data
-            object response = new
+            return new Dictionary<string, ResponseException>()
             {
-                error = new
                 {
-                    status_code = statusCode,
-                    message = ex.Message
+                    "error", new ResponseException
+                    {
+                        StatusCode = (int)statusCode,
+                        Message = ex.Message
+                    }
                 }
             };
-
-            return response;
         }
     }
 }

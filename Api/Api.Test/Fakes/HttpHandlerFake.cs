@@ -3,12 +3,12 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Api.Test.Handlers
+namespace Api.Test.Fakes
 {
     /// <summary>
     /// Handler to be used for mock purposes
     /// </summary>
-    public class HttpHandlerMock : HttpMessageHandler
+    public class HttpHandlerFake : HttpMessageHandler
     {
         /// <summary>
         /// Status code
@@ -25,7 +25,7 @@ namespace Api.Test.Handlers
         /// </summary>
         /// <param name="statusCode">Default status code</param>
         /// <param name="content">Default content</param>
-        public HttpHandlerMock(HttpStatusCode statusCode, string content)
+        public HttpHandlerFake(HttpStatusCode statusCode, string content)
         {
             this.StatusCode = statusCode;
             this.Content = content;

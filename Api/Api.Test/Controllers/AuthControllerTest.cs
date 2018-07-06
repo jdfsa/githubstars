@@ -1,16 +1,15 @@
 using Api.Controllers;
-using Api.Test.Handlers;
+using Api.Test.Fakes;
+using Api.Test.Helper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Api.Test
+namespace Api.Test.Controllers
 {
     public class AuthControllerTest
     {
@@ -18,24 +17,17 @@ namespace Api.Test
 
         public AuthControllerTest()
         {
-            var configuration = new Mock<IConfiguration>();
-            configuration.Setup(x => x["GitHubData:ClientId"]).Returns("_client_id_test");
-            configuration.Setup(x => x["GitHubData:ClientSecret"]).Returns("_client_secret_test");
-            configuration.Setup(x => x["GitHubData:Scope"]).Returns("_scope:t1,scope:t2");
-            configuration.Setup(x => x["GitHubEndpoints:Authorize"]).Returns("http://url-test.com/authorize");
-            configuration.Setup(x => x["GitHubEndpoints:AccessToken"]).Returns("http://url-test.com/access_token");
-            configuration.Setup(x => x["GitHubEndpoints:GraphQL"]).Returns("http://url-test.com/graphql");
+            var configuration = ConfigurationHelper.GetConfigurationMock();
 
             var random = new Mock<Random>();
             random.Setup(x => x.Next()).Returns(99887766);
 
-            var httpClient = new HttpClient(new HttpHandlerMock(
+            var httpClient = new HttpClient(new HttpHandlerFake(
                 HttpStatusCode.OK,
                 "{\"access_token\":\"access_token_test\",\"token_type\":\"bearer\",\"scope\":\"scope_test\"}"));
 
-            var authControllerMock = new Mock<AuthController>();
-            this.controller = new AuthController(configuration.Object);
-            this.controller.Initialize(configuration.Object, random.Object, httpClient);
+            this.controller = new AuthController(configuration);
+            this.controller.Initialize(configuration, random.Object, httpClient);
         }
 
         [Fact]
