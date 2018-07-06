@@ -1,0 +1,26 @@
+.search-content {
+  .search-component {
+    margin-top: 20%;
+  }
+  .picture-container {
+    display: none;
+  }
+  .logo,
+  .search-input {
+    display: block;
+    clear: both;
+    margin-bottom: 54px;
+    width: 100%;
+    text-align: center;
+  }
+  .search-input {
+    input {
+      padding: 26px 34px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+      border-radius: 5px;
+      background-position-x: 822px;
+      width: 887px;
+      text-align: left;
+    }
+  }
+}

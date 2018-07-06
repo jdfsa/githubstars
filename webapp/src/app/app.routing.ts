@@ -2,19 +2,25 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ContentListComponent, AuthorizeComponent } from './pages';
 import { AuthCheckService } from './auth/auth-check.service';
+import { SearchContentComponent } from './pages';
 
 const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: '/list',
+    redirectTo: '/search',
     pathMatch: 'full'
+  },
+  {
+    path: 'search',
+    component: SearchContentComponent,
+    data: {
+      search: ''
+    },
+    canActivate: [AuthCheckService]
   },
   {
     path: 'list',
     component: ContentListComponent,
-    data: {
-      search: ''
-    },
     canActivate: [AuthCheckService]
   },
   {

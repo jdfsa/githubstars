@@ -5,13 +5,13 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { SearchComponent, UserInfoComponent, RepoItemComponent } from './components';
-import { ContentListComponent } from './pages';
+import { ContentListComponent, AuthorizeComponent, SearchContentComponent } from './pages';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './auth/token.interceptor';
-import { AuthorizeComponent } from './pages/authorize/authorize.component';
 import { AuthService } from './auth/auth.service';
 import { AuthCheckService } from './auth/auth-check.service';
 import { UserService } from './services/user.service';
+import { RepositoryService } from './services/repository.service';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,8 @@ import { UserService } from './services/user.service';
     ContentListComponent,
     UserInfoComponent,
     RepoItemComponent,
-    AuthorizeComponent
+    AuthorizeComponent,
+    SearchContentComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +36,8 @@ import { UserService } from './services/user.service';
     },
     AuthService,
     AuthCheckService,
-    UserService
+    UserService,
+    RepositoryService
   ],
   bootstrap: [AppComponent]
 })
