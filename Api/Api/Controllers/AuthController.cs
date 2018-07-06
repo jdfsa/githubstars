@@ -69,9 +69,10 @@ namespace Api.Controllers
                     string.Format("GitHubStars{0}", random.Next())));
 
                 // return the querystring formatted
-                return string.Format("{0}?client_id={1}&redirect_uri={2}&state={3}",
+                return string.Format("{0}?client_id={1}&scope={2}&redirect_uri={3}&state={4}",
                     configuration["GitHubEndpoints:Authorize"],
                     configuration["GitHubData:ClientId"],
+                    configuration["GitHubData:Scope"],
                     urlBack, passCode);
             }
             catch (FormatException ex)
