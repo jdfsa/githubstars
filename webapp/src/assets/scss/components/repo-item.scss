@@ -25,10 +25,16 @@
     color: $button-violet;
     margin-top: 15px;
     float: right;
+    &:after {
+      content: 'star';
+    }
 
     &.active {
       background-color: $button-violet;
       color: $font-white;
+      &:after {
+        content: 'unstar';
+      }
     }
   }
 }

@@ -4,12 +4,8 @@
   </div>
   <div class="content" *ngIf="!noResult">
     <app-user-info [data]="data"></app-user-info>
-    <div class="repo-list">
-      <app-repo-item></app-repo-item>
-      <app-repo-item></app-repo-item>
-      <app-repo-item></app-repo-item>
-      <app-repo-item></app-repo-item>
-      <app-repo-item></app-repo-item>
+    <div class="repo-list" *ngIf="data?.repositories?.edges">
+      <app-repo-item *ngFor="let repo of data.repositories.edges" [data]="repo"></app-repo-item>
     </div>
   </div>
   <div *ngIf="noResult" class="empty-state">

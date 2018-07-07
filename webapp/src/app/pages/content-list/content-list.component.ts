@@ -12,7 +12,7 @@ export class ContentListComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private repo: RepositoryService) { }
+    private repoService: RepositoryService) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -21,11 +21,10 @@ export class ContentListComponent implements OnInit {
   }
 
   private search(criteria: string) {
-    this.repo.getRepositories(criteria).subscribe(response => {
+    this.repoService.getRepositories(criteria).subscribe(response => {
       const edges = response.data && response.data.search && response.data.search.edges ? response.data.search.edges : [];
       this.data = edges.length > 0 ? edges[0].node : null;
       this.noResult = !this.data;
-      console.log(this.data);
     });
   }
 

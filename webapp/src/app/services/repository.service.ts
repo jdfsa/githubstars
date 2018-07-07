@@ -11,4 +11,12 @@ export class RepositoryService {
     return this.http.get<any>(environment.endpoints.repository + `?search=${search}`);
   }
 
+  public starRepository(userId: string, repoId: string, starring: boolean) {
+    return this.http.post<any>(environment.endpoints.repository, {
+      userId: userId,
+      repoId: repoId,
+      starring: starring
+    });
+  }
+
 }
