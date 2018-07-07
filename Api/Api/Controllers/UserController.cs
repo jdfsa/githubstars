@@ -63,7 +63,7 @@ namespace Api.Controllers
 
                 GraphQLRequest request = new GraphQLRequest
                 {
-                    Query = @"query { viewer { login, avatarUrl } }"
+                    Query = @"query { viewer { id, login, avatarUrl } }"
                 };
 
                 var result = service.PostData(request).Result;
