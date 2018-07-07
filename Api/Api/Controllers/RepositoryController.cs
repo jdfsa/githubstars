@@ -1,7 +1,9 @@
-﻿using Api.Service;
+﻿using Api.Model;
+using Api.Service;
 using GraphQL.Client;
 using GraphQL.Client.Exceptions;
 using GraphQL.Common.Request;
+using GraphQL.Common.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -48,7 +50,7 @@ namespace Api.Controllers
         /// </summary>
         /// <param name="token">Authorization token required from GitHub</param>
         /// <param name="search">Search criteria (user name or nickname)</param>
-        /// <returns></returns>
+        /// <returns>Response result</returns>
         [HttpGet]
         public IActionResult Get(
             [FromHeader(Name = "Authorization")] string token, 
@@ -61,42 +63,21 @@ namespace Api.Controllers
 
                 GraphQLRequest request = new GraphQLRequest
                 {
-                    Query = @" 
-                        query { 
-                            search(query: ""#username#"", type: USER, first: 1) {
-                                edges {
-                                    node {
-                                        ... on User {
-                                            id,
-                                            avatarUrl,
-                                            name,
-                                            login,
-                                            bio,
-                                            company,
-                                            companyHTML,
-                                            location,
-                                            email,
-                                            websiteUrl,
-                                            repositories(first: 4) {
-                                                edges {
-                                                    node {
-                                                        id,
-                                                        name,
-                                                        description,
-                                                        stargazers {
-                                                            totalCount
-                                                        }
-                                                        viewerHasStarred
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }"
+                    OperationName = "QueryUserByName",
+                    Variables = new
+                    {
+                        name = search
+                    },
+                    Query = @"query QueryUserByName($name: String!) { 
+                                search(query: $name, type: USER, first: 1) { edges { node {
+                                    ... on User {
+                                        id, avatarUrl, name, login, bio, company, companyHTML, location, email, websiteUrl,
+                                        repositories(first: 4) {
+                                            edges { node {
+                                                    id, name, description, viewerHasStarred,
+                                                    stargazers { totalCount }
+                                            }}}}}}}}"
                 };
-                request.Query = request.Query.Replace("#username#", search);
 
                 var result = service.PostData(request).Result;
                 return StatusCode((int)HttpStatusCode.OK, result);
@@ -113,6 +94,85 @@ namespace Api.Controllers
             catch (Exception ex)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, ParseException(ex));
+            }
+        }
+
+        /// <summary>
+        /// Adds or removes a star over a repository
+        /// </summary>
+        /// <param name="token">Authorization token required from GitHub</param>
+        /// <param name="data">Input data consiting basicaly of user and repository ids 
+        ///     and a flag indicating whether it should add to or remove a star from the repository</param>
+        /// <returns>Response rsult</returns>
+        [HttpPost]
+        public IActionResult Starring([FromHeader(Name = "Authorization")] string token, [FromBody] StarringRequest data)
+        {
+            try
+            {
+                service.Headers.Add("Authorization", token);
+                service.Headers.Add("User-Agent", token);
+
+                GraphQLRequest request = new GraphQLRequest
+                {
+                    Variables = new
+                    {
+                        input = new {
+                            starrableId = data.RepositoryId,
+                            clientMutationId = data.UserId
+                        }
+                    },
+                    Query = data.Starring ? AddStarQuery : RemoveStarQuery
+                };
+
+                var result = service.PostData(request).Result;
+                return StatusCode((int)HttpStatusCode.OK, result);
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerException is GraphQLHttpException)
+                {
+                    var message = (ex.InnerException as GraphQLHttpException).HttpResponseMessage;
+                    return StatusCode((int)message.StatusCode, message.ReasonPhrase);
+                }
+                return StatusCode((int)HttpStatusCode.InternalServerError, ParseException(ex));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ParseException(ex));
+            }
+        }
+
+        /// <summary>
+        /// Gets a add-star query
+        /// </summary>
+        private string AddStarQuery
+        {
+            get
+            {
+                return @"mutation AddStarToRepo($input: AddStarInput!) {
+                            addStar (input: $input) {
+                                clientMutationId,
+                                starrable {
+                                    id,
+                                    viewerHasStarred
+                                }}}";
+            }
+        }
+
+        /// <summary>
+        /// Gets a remove-star query
+        /// </summary>
+        private string RemoveStarQuery
+        {
+            get
+            {
+                return @"mutation RemoveStarToRepo($input: RemoveStarInput!) {
+                          removeStar (input: $input) {
+                            clientMutationId,
+                            starrable {
+                              id,
+                              viewerHasStarred
+                            }}}";
             }
         }
 
