@@ -4,12 +4,6 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
   selector: 'app-user-info',
   templateUrl: './user-info.component.html'
 })
-export class UserInfoComponent implements OnInit {
+export class UserInfoComponent {
   @Input() data: any;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
 }
