@@ -25,5 +25,10 @@
     color: $button-violet;
     margin-top: 15px;
     float: right;
+
+    &.active {
+      background-color: $button-violet;
+      color: $font-white;
+    }
   }
 }
