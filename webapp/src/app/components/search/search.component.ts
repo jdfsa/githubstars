@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-search',
@@ -13,11 +14,15 @@ export class SearchComponent implements OnInit {
   constructor(
     private router: Router,
     private active: ActivatedRoute,
-    private userService: UserService) { }
+    private userService: UserService,
+    private authService: AuthService) { }
 
   ngOnInit() {
     this.userService.getUserData().subscribe(data => {
       this.data = data.data;
+
+      // stores user id
+      this.authService.storeUserId(this.data.viewer.id);
     });
 
     this.active.queryParams.subscribe(params => {

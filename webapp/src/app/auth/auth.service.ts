@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { AppDataModel } from '../model/app-data.model';
 
 @Injectable()
 export class AuthService {
@@ -11,12 +12,38 @@ export class AuthService {
     return 'githubstars';
   }
 
+  private getAppData(): AppDataModel {
+    const item = localStorage.getItem(this.TOKEN_STORAGE_NAME);
+    if (!item) {
+      return new AppDataModel('', '');
+    }
+
+    const obj = JSON.parse(item);
+    return new AppDataModel(obj.token || '', obj.userId || '');
+  }
+
+  private storeAppData(data: AppDataModel) {
+    localStorage.setItem(this.TOKEN_STORAGE_NAME, JSON.stringify(data));
+  }
+
   public getToken(): string {
-    return localStorage.getItem(this.TOKEN_STORAGE_NAME) || '';
+    return this.getAppData().token || '';
   }
 
   public storeToken(token: string) {
-    localStorage.setItem(this.TOKEN_STORAGE_NAME, token);
+    const data = this.getAppData();
+    data.token = token;
+    this.storeAppData(data);
+  }
+
+  public getUserId(): string {
+    return this.getAppData().userId || '';
+  }
+
+  public storeUserId(userId: string) {
+    const data = this.getAppData();
+    data.userId = userId;
+    this.storeAppData(data);
   }
 
   public isAuthenticated(): boolean {
