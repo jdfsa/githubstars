@@ -80,7 +80,7 @@ namespace Api.Controllers
                 };
 
                 var result = service.PostData(request).Result;
-                return StatusCode((int)HttpStatusCode.OK, result);
+                return base.TreatResponseMessage(result);
         }
             catch (AggregateException ex)
             {
@@ -125,7 +125,7 @@ namespace Api.Controllers
                 };
 
                 var result = service.PostData(request).Result;
-                return StatusCode((int)HttpStatusCode.OK, result);
+                return base.TreatResponseMessage(result);
             }
             catch (AggregateException ex)
             {

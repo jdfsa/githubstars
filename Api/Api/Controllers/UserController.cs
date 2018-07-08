@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Api.Service;
-using GraphQL.Client;
+﻿using Api.Service;
 using GraphQL.Client.Exceptions;
 using GraphQL.Common.Request;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Net;
 
 namespace Api.Controllers
 {
@@ -67,7 +62,10 @@ namespace Api.Controllers
                 };
 
                 var result = service.PostData(request).Result;
-                return StatusCode((int)HttpStatusCode.OK, result);
+                if (result.Data == null && result.Errors == null)
+                    return StatusCode((int)HttpStatusCode.Unauthorized, new { });
+
+                return base.TreatResponseMessage(result);
             }
             catch (AggregateException ex)
             {

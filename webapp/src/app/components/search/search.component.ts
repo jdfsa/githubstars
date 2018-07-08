@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.userService.getUserData().subscribe(data => {
-      this.data = data.data;
+      this.data = data;
 
       // stores user id
       this.authService.storeUserId(this.data.viewer.id);

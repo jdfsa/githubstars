@@ -57,7 +57,7 @@ namespace Api.Test.Controllers
                 }
             };
             var result = (ObjectResult)controller.GetUserData("tokentest");
-            var actual = (result.Value as GraphQLResponse).Data;
+            var actual = result.Value;
 
             Assert.Equal(expected, actual);
         }
@@ -71,11 +71,11 @@ namespace Api.Test.Controllers
             Assert.Equal(500, result.StatusCode.GetValueOrDefault(0));
 
             // assert specific type
-            Assert.IsType<Dictionary<string, ResponseException>>(result.Value);
+            Assert.IsType<Dictionary<string, List<string>>>(result.Value);
 
             // assert specfic value
-            var actual = (Dictionary<string, ResponseException>)result.Value;
-            Assert.NotNull(actual["error"]);
+            var actual = result.Value as Dictionary<string, List<string>>;
+            Assert.NotNull(actual["errors"]);
         }
 
     }
