@@ -21,6 +21,11 @@ export class ContentListComponent implements OnInit {
   }
 
   private search(criteria: string) {
+    if (!criteria) {
+      this.data = null;
+      this.noResult = true;
+      return;
+    }
     this.repoService.getRepositories(criteria).subscribe(data => {
       this.data = data;
       this.noResult = !this.data;
