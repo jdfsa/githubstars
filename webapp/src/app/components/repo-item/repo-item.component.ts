@@ -15,7 +15,7 @@ export class RepoItemComponent {
 
   public starRepo(repoId: string, starring: boolean) {
     this.repoService.starRepository(this.authService.getUserId(), repoId, starring).subscribe(data => {
-      this.data.node.viewerHasStarred = starring;
+      this.data.viewerHasStarred = starring;
     });
   }
 }

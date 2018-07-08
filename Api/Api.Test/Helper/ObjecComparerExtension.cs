@@ -1,4 +1,10 @@
-﻿namespace Api.Test.Helper
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Api.Test.Helper
 {
     /// <summary>
     /// Object exntesion comparer
@@ -31,7 +37,20 @@
                 if (expectedProperty == null)
                     return false;
 
-                if (!EquivalentTo(property.GetValue(actual), expectedProperty.GetValue(expected)))
+                object actualValue = null;
+                object expectedValue = null;
+
+                try
+                {
+                    actualValue = property.GetValue(actual);
+                    expectedValue = expectedProperty.GetValue(expected);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (!EquivalentTo(actualValue, expectedValue))
                     return false;
             }
 

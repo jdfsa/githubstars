@@ -6,8 +6,11 @@ using GraphQL.Common.Request;
 using GraphQL.Common.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 
 namespace Api.Controllers
 {
@@ -80,7 +83,7 @@ namespace Api.Controllers
                 };
 
                 var result = service.PostData(request).Result;
-                return base.TreatResponseMessage(result);
+                return base.TreatResponseMessage(result, Parse);
         }
             catch (AggregateException ex)
             {
@@ -174,6 +177,70 @@ namespace Api.Controllers
                               viewerHasStarred
                             }}}";
             }
+        }
+
+        /// <summary>
+        /// Parses a dynamic user data to a typed one
+        /// </summary>
+        /// <param name="data">GraphQL user data</param>
+        /// <returns>Parsed view of user</returns>
+        private object Parse(dynamic data)
+        {
+            if (data?.search?.edges == null || !(data.search.edges as JArray).HasValues)
+                return null;
+
+            var edge = data.search.edges[0];
+            if (edge == null)
+                return null;
+
+            var node = edge.node;
+            if (node == null)
+                throw new Exception("Wrong expected data from GitHub");
+
+            var user = new UserInfo
+            {
+                Id = node.id,
+                AvatarUrl = node.avatarUrl,
+                Name = node.name,
+                Login = node.login,
+                Bio = node.bio,
+                Company = node.company,
+                CompanyHTML = node.companyHTML,
+                Location = node.location,
+                Email = node.email,
+                WebSiteUrl = node.websiteUrl,
+                Repositories = ParseRepos(node.repositories)
+            };
+            return user;
+        }
+
+        /// <summary>
+        /// Parses a dynamic repositories data to a typed one
+        /// </summary>
+        /// <param name="data">Dynamic repositories</param>
+        /// <returns>List of typedd repositories</returns>
+        private List<Repository> ParseRepos(dynamic data)
+        {
+            if (data?.edges == null || !(data.edges as JArray).HasValues)
+                throw new Exception("Wrong expected data from GitHub");
+
+            List<Repository> repositories = new List<Repository>();
+            foreach (var edge in data.edges)
+            {
+                var node = edge.node;
+                if (node == null)
+                    throw new Exception("Wrong expected data from GitHub");
+
+                repositories.Add(new Repository
+                {
+                    Id = node.id,
+                    Name = node.name,
+                    Description = node.description,
+                    ViewerHasStarred = node.viewerHasStarred,
+                    StargazesCount = ((int?)node.stargazers?.totalCount).GetValueOrDefault(0)
+                });
+            }
+            return repositories;
         }
 
         /// <summary>

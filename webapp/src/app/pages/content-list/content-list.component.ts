@@ -21,9 +21,8 @@ export class ContentListComponent implements OnInit {
   }
 
   private search(criteria: string) {
-    this.repoService.getRepositories(criteria).subscribe(response => {
-      const edges = response.data && response.data.search && response.data.search.edges ? response.data.search.edges : [];
-      this.data = edges.length > 0 ? edges[0].node : null;
+    this.repoService.getRepositories(criteria).subscribe(data => {
+      this.data = data;
       this.noResult = !this.data;
     });
   }
