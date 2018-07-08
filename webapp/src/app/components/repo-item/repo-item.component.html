@@ -4,7 +4,7 @@
     <div class="description">{{data?.description}}</div>
     <span>
       <img src="/assets/img/star.svg" aria-hidden="true">
-      <span [attr.aria-label]="data?.node?.stargazers + ' stars'">{{data?.stargazers}}</span>
+      <span [attr.aria-label]="data?.stargazers + ' stars'">{{data?.stargazers}}</span>
     </span>
   </div>
   <button *ngIf="data" type="button" class="col-sm-2"
