@@ -22,7 +22,7 @@ export class SearchComponent implements OnInit {
       this.data = data;
 
       // stores user id
-      this.authService.storeUserId(this.data.viewer.id);
+      this.authService.storeUserId(this.data.id);
     });
 
     this.active.queryParams.subscribe(params => {

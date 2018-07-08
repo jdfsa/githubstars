@@ -3,6 +3,7 @@ using GraphQL.Common.Response;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Net;
 
@@ -51,7 +52,7 @@ namespace Api.Controllers
         /// <param name="graphResponse">GraphQL response data</param>
         /// <param name="parser">Custom parser for the result</param>
         /// <returns>Final response data</returns>
-        protected IActionResult TreatResponseMessage(GraphQLResponse graphResponse, Func<GraphQLResponse, Object> parser = null)
+        protected IActionResult TreatResponseMessage(GraphQLResponse graphResponse, Func<dynamic, object> parser = null)
         {
             // treats errors as band request (400)
             if (graphResponse.Errors != null && graphResponse.Errors.Length > 0)
@@ -62,7 +63,7 @@ namespace Api.Controllers
                 return StatusCode((int)HttpStatusCode.Unauthorized, new { });
 
             // if there is a parser function, returns its response data; otherwise returns the original graph response
-            object response = parser != null ? parser.Invoke(graphResponse) : graphResponse.Data;
+            object response = parser != null ? parser.Invoke(graphResponse.Data) : graphResponse.Data;
 
             return StatusCode((int)HttpStatusCode.OK, response);
         }

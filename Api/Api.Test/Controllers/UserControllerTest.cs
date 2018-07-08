@@ -1,20 +1,12 @@
 ﻿using Api.Controllers;
 using Api.Model;
-using Api.Service;
 using Api.Test.Fakes;
 using Api.Test.Helper;
-using GraphQL.Client;
-using GraphQL.Common.Request;
 using GraphQL.Common.Response;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Api.Test.Controllers
@@ -30,14 +22,15 @@ namespace Api.Test.Controllers
             {
                 Response = new GraphQLResponse
                 {
-                    Data = new
+                    Data = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(new
                     {
                         viewer = new
                         {
+                            ID = "idtest",
                             login = "logintest",
                             avatarUrl = "https://avatarexamplle.com?id=x"
                         }
-                    }
+                    }))
                 }
             };
             var authControllerMock = new Mock<UserController>();
@@ -48,18 +41,16 @@ namespace Api.Test.Controllers
         [Fact]
         public void GetUserDataTest()
         {
-            var expected = new
+            var expected = new User
             {
-                viewer = new
-                {
-                    login = "logintest",
-                    avatarUrl = "https://avatarexamplle.com?id=x"
-                }
+                Login = "logintest",
+                AvatarUrl = "https://avatarexamplle.com?id=x"
             };
+                
             var result = (ObjectResult)controller.GetUserData("tokentest");
-            var actual = result.Value;
+            var actual = result.Value as User;
 
-            Assert.Equal(expected, actual);
+            Assert.True(expected.EquivalentTo(actual));
         }
 
         [Fact]

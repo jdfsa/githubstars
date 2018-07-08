@@ -7,7 +7,7 @@
       <input type="search" placeholder="github username..." [(ngModel)]="search" (keyup.enter)="doSearch()" />
     </div>
     <div class="col-sm-1 picture-container">
-        <img class="picture" [src]="data?.viewer?.avatarUrl" *ngIf="!!data" />
+        <img class="picture" [src]="data?.avatarUrl" *ngIf="!!data" />
     </div>
   </div>
 </div>

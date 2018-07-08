@@ -1,8 +1,10 @@
-﻿using Api.Service;
+﻿using Api.Model;
+using Api.Service;
 using GraphQL.Client.Exceptions;
 using GraphQL.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 
@@ -58,14 +60,26 @@ namespace Api.Controllers
 
                 GraphQLRequest request = new GraphQLRequest
                 {
-                    Query = @"query { viewer { id, login, avatarUrl } }"
+                    Query = @"query { viewer { id, login, avatarUrl, name } }"
                 };
 
                 var result = service.PostData(request).Result;
                 if (result.Data == null && result.Errors == null)
                     return StatusCode((int)HttpStatusCode.Unauthorized, new { });
 
-                return base.TreatResponseMessage(result);
+                return base.TreatResponseMessage(result, resp =>
+                {
+                    if (resp == null || resp.viewer == null)
+                        throw new Exception("Required data (viewer) not supplied");
+
+                    return new User
+                    {
+                        Id = resp.viewer.id,
+                        Login = resp.viewer.login,
+                        AvatarUrl = resp.viewer.avatarUrl,
+                        Name = resp.viewer.name
+                    };
+                });
             }
             catch (AggregateException ex)
             {
