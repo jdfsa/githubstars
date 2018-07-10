@@ -1,17 +1,15 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastContainerModule, ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
-import { SearchComponent, UserInfoComponent, RepoItemComponent } from './components';
-import { ContentListComponent, AuthorizeComponent, SearchContentComponent } from './pages';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { TokenInterceptor } from './auth/token.interceptor';
-import { AuthService } from './auth/auth.service';
-import { AuthCheckService } from './auth/auth-check.service';
-import { UserService } from './services/user.service';
-import { RepositoryService } from './services/repository.service';
+import { AuthCheckService, AuthService, TokenInterceptor } from './auth';
+import { RepoItemComponent, SearchComponent, ToastComponent, UserInfoComponent } from './components';
+import { AuthorizeComponent, ContentListComponent, SearchContentComponent } from './pages';
+import { RepositoryService, UserService } from './services';
 
 @NgModule({
   declarations: [
@@ -21,13 +19,24 @@ import { RepositoryService } from './services/repository.service';
     UserInfoComponent,
     RepoItemComponent,
     AuthorizeComponent,
-    SearchContentComponent
+    SearchContentComponent,
+    ToastComponent
   ],
   imports: [
     FormsModule,
     BrowserModule,
-    AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    ToastContainerModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-left',
+      preventDuplicates: false,
+      toastComponent: ToastComponent
+    }),
+    AppRoutingModule
+  ],
+  entryComponents: [
+    ToastComponent
   ],
   providers: [
     {
