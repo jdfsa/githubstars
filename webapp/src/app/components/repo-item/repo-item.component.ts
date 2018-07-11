@@ -16,7 +16,7 @@ export class RepoItemComponent {
     private toasterService: ToastrService) {}
 
   public starRepo(repoId: string, starring: boolean) {
-    this.repoService.starRepository(this.authService.getUserId(), repoId, starring).subscribe(data => {
+    this.repoService.starRepository(repoId, starring).subscribe(data => {
       this.data.viewerHasStarred = starring;
       this.data.stargazers += starring ? 1 : -1;
       this.toasterService.success(starring ? 'Repo starred with success!' : 'Repo unstarred successfully!', null, {

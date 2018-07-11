@@ -1,4 +1,6 @@
 ﻿using Api.Model;
+using Api.Service;
+using GraphQL.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -6,6 +8,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Api.Controllers
@@ -23,6 +26,11 @@ namespace Api.Controllers
         private IConfiguration configuration;
 
         /// <summary>
+        /// GraphQL service to retrieve data from GitHub
+        /// </summary>
+        private GraphQLService service;
+
+        /// <summary>
         /// Random values
         /// </summary>
         private Random random;
@@ -38,7 +46,7 @@ namespace Api.Controllers
         /// <param name="configuration"></param>
         public AuthController(IConfiguration configuration)
         {
-            Initialize(configuration, new Random(), new HttpClient());
+            Initialize(configuration, new Random(), new HttpClient(), GraphQLService.GetInstance(configuration["GitHubEndpoints:GraphQL"]));
         }
 
         /// <summary>
@@ -47,11 +55,13 @@ namespace Api.Controllers
         /// <param name="cnfiguration">Configuration object</param>
         /// <param name="random">Random instance</param>
         /// <param name="httpClient">httpClient instance</param>
-        public void Initialize(IConfiguration cnfiguration, Random random, HttpClient httpClient)
+        /// <param name="service">httpClient instance</param>
+        public void Initialize(IConfiguration cnfiguration, Random random, HttpClient httpClient, GraphQLService service)
         {
             this.configuration = cnfiguration;
             this.random = random;
             this.httpClient = httpClient;
+            this.service = service;
         }
 
         /// <summary>
@@ -123,7 +133,25 @@ namespace Api.Controllers
 
                 // read and return the response payload
                 string content = response.Content.ReadAsStringAsync().Result;
-                return StatusCode(200, JsonConvert.DeserializeObject(content));
+
+                // parse the object taken
+                var gitResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(content);
+
+                // returns forbidden if an error occured, so the user must authenticate again
+                if (!string.IsNullOrEmpty(gitResponse.Error))
+                    throw new HttpException(gitResponse.ErrorDescription, HttpStatusCode.Forbidden);
+
+                string gitHubToken = string.Format("{0} {1}", gitResponse.TokenType, gitResponse.AccessToken);
+                var user = ValidateGithubToken(gitHubToken);
+                var finalToken = GenerateApptoken(gitHubToken, user);
+
+                // overrides the response token and send to the user
+                gitResponse.AccessToken = finalToken;
+                return StatusCode(200, gitResponse);
+            }
+            catch (HttpException ex)
+            {
+                return StatusCode((int)ex.StatusCode, ex.Message);
             }
             catch (JsonSerializationException ex)
             {
@@ -137,6 +165,48 @@ namespace Api.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, ParseException(ex));
             }
+        }
+
+        /// <summary>
+        /// Validates the GitHub token by getting the logged user
+        /// </summary>
+        /// <param name="token">GitHub token</param>
+        /// <returns>User data</returns>
+        private User ValidateGithubToken(string token)
+        {
+            service.Headers.Clear();
+            service.Headers.Add("Authorization", token);
+            service.Headers.Add("User-Agent", token);
+
+            GraphQLRequest request = new GraphQLRequest
+            {
+                Query = @"query { viewer { id } }"
+            };
+
+            var result = service.PostData(request).Result;
+            if (result.Errors != null || result.Data == null || result.Data.viewer == null)
+                throw new HttpException("No user found with the given token", HttpStatusCode.Forbidden);
+
+            return new User
+            {
+                Id = result.Data.viewer.id
+            };
+        }
+
+        /// <summary>
+        /// Generates the token
+        /// </summary>
+        /// <param name="token">GitHub token</param>
+        /// <param name="user">User data to be wrapped in the token</param>
+        /// <returns>Generated token</returns>
+        private string GenerateApptoken(string token, User user)
+        {
+            TokenClaims tokenSession = new TokenClaims
+            {
+                GitHubToken = token,
+                User = user
+            };
+            return Jose.JWT.Encode(tokenSession, configuration["TokenKey"], Jose.JwsAlgorithm.none);
         }
 
         /// <summary>

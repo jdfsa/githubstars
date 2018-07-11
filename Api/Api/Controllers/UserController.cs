@@ -4,7 +4,6 @@ using GraphQL.Client.Exceptions;
 using GraphQL.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using System;
 using System.Net;
 
@@ -12,6 +11,7 @@ namespace Api.Controllers
 {
     [Produces("application/json")]
     [Route("api/user")]
+    [CheckToken]
     public class UserController : BaseController, IDisposable
     {
         /// <summary>
@@ -50,7 +50,7 @@ namespace Api.Controllers
         /// <param name="token">Authorization token required from GitHub</param>
         /// <returns>Response data</returns>
         [HttpGet]
-        public IActionResult GetUserData([FromHeader(Name = "Authorization")] string token)
+        public IActionResult GetUserData([FromHeader(Name = "X-GitHub-Token")] string token)
         {
             try
             {

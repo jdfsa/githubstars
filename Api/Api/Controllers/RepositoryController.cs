@@ -1,21 +1,19 @@
 ﻿using Api.Model;
 using Api.Service;
-using GraphQL.Client;
 using GraphQL.Client.Exceptions;
 using GraphQL.Common.Request;
-using GraphQL.Common.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Linq;
 
 namespace Api.Controllers
 {
     [Produces("application/json")]
     [Route("api/repository")]
+    [CheckToken]
     public class RepositoryController : BaseController, IDisposable
     {
         /// <summary>
@@ -56,7 +54,7 @@ namespace Api.Controllers
         /// <returns>Response result</returns>
         [HttpGet]
         public IActionResult Get(
-            [FromHeader(Name = "Authorization")] string token, 
+            [FromHeader(Name = "X-GitHub-Token")] string token, 
             [FromQuery] string search)
         {
             try
@@ -108,7 +106,10 @@ namespace Api.Controllers
         ///     and a flag indicating whether it should add to or remove a star from the repository</param>
         /// <returns>Response rsult</returns>
         [HttpPost]
-        public IActionResult Starring([FromHeader(Name = "Authorization")] string token, [FromBody] StarringRequest data)
+        public IActionResult Starring(
+            [FromHeader(Name = "X-GitHub-Token")] string token, 
+            [FromHeader(Name = "X-GitHub-User-Id")] string userId,
+            [FromBody] StarringRequest data)
         {
             try
             {
@@ -121,7 +122,7 @@ namespace Api.Controllers
                     {
                         input = new {
                             starrableId = data.RepositoryId,
-                            clientMutationId = data.UserId
+                            clientMutationId = userId
                         }
                     },
                     Query = data.Starring ? AddStarQuery : RemoveStarQuery
