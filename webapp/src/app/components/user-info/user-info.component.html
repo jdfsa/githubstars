@@ -24,9 +24,9 @@
       <img src="/assets/img/mail-icon.svg" aria-hidden="true" />
       <span><a [href]="data?.email ? 'mailto:' + data?.email : null">{{data?.email}}</a></span>
     </div>
-    <div *ngIf="data?.websiteUrl" class="info-data">
+    <div *ngIf="data?.webSiteUrl" class="info-data">
       <img src="/assets/img/globe-icon.svg" aria-hidden="true" />
-      <span><a [href]="data?.websiteUrl">{{data?.websiteUrl}}</a></span>
+      <span><a [href]="data?.webSiteUrl">{{data?.webSiteUrl}}</a></span>
     </div>
   </div>
 </div>
